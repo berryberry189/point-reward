@@ -33,7 +33,6 @@ class RedisRepositoryTest {
 
     // then
     assertEquals(1, redisRepository.getSize(key));
-
   }
 
   @Test
@@ -91,6 +90,21 @@ class RedisRepositoryTest {
     Set<Object> set = redisRepository.range(key, 0, 1);
     assertTrue(set.contains(value1));
     assertTrue(set.contains(value2));
+  }
+
+  @Test
+  void addIfAbsent_value가_같을때_나중에_저장되는_score은_무시한다() {
+    // given
+    String value = "memberId";
+    long score1 = 10;
+    long score2 = 20;
+
+    // when
+    redisRepository.addIfAbsent(key, value, score1);
+    redisRepository.addIfAbsent(key, value, score2);
+
+    // then
+    assertEquals(score1, redisRepository.getScore(key, value));
 
   }
 

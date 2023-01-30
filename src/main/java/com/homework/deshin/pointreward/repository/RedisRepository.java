@@ -20,6 +20,10 @@ public class RedisRepository {
     redisTemplate.opsForZSet().add(key, value, (int) now);
   }
 
+  public void addIfAbsent (String key, String value, long now) {
+    redisTemplate.opsForZSet().addIfAbsent(key, value, (int) now);
+  }
+
   public Set<Object> range(String key, long start, long end) {
     return redisTemplate.opsForZSet().range(key, start, end);
   }
