@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: local
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/point-reward
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+  redis:
+    host: localhost
+    port: 6379
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
+
