@@ -40,5 +40,8 @@ public class RedisRepository {
     return redisTemplate.opsForZSet().score(key, o);
   }
 
+  public void remove(String key, Object o) {
+    redisTemplate.opsForZSet().remove(key, o);
+  }
 
 }
