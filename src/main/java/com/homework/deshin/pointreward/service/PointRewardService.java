@@ -4,6 +4,6 @@ import com.homework.deshin.pointreward.dto.PayPointRequest;
 
 public interface PointRewardService {
 
-  void addWaitQueue(PayPointRequest request);
+  void payPointReward(PayPointRequest request);
 
 }
