@@ -31,7 +31,7 @@ public class RewardLimit {
 
 
   public void decrease() {
-    if(this.limitCount < 1) {
+    if (this.limitCount < 1) {
       throw new IllegalArgumentException("선착순이 종료되었습니다.");
     }
     this.limitCount--;

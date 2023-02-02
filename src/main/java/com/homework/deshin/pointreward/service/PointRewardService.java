@@ -1,9 +1,17 @@
 package com.homework.deshin.pointreward.service;
 
+import com.homework.deshin.pointreward.constant.PointRewardSort;
+import com.homework.deshin.pointreward.domain.PointRewardDto;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface PointRewardService {
 
-  void payPointReward(PayPointRequest request);
+  PointRewardDto payPointReward(PayPointRequest request);
+
+  List<PointRewardDto> getPointRewardList(LocalDate payDate, PointRewardSort sort);
+
+  PointRewardDto getPointReward(Long pointRewardId);
 
 }

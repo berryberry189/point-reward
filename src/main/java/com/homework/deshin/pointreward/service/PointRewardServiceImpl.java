@@ -1,11 +1,18 @@
 package com.homework.deshin.pointreward.service;
 
+import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.domain.PointReward;
+import com.homework.deshin.pointreward.domain.PointRewardDto;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +30,7 @@ public class PointRewardServiceImpl implements PointRewardService {
 
   @Transactional
   @Override
-  public void payPointReward(PayPointRequest request) {
+  public PointRewardDto payPointReward(PayPointRequest request) {
 
     Optional<PointReward> pointRewardOptional =
         pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqual(request.getMemberId(), today.atStartOfDay());
@@ -45,11 +52,39 @@ public class PointRewardServiceImpl implements PointRewardService {
       }
     }
 
-    pointRewardRepository.save(PointReward.builder()
+    PointReward savedPointReward = pointRewardRepository.save(PointReward.builder()
         .memberId(request.getMemberId())
         .payAt(LocalDateTime.now())
         .point(point)
         .build());
+
+    return new PointRewardDto(savedPointReward);
+  }
+
+  @Transactional(readOnly = true)
+  @Override
+  public List<PointRewardDto> getPointRewardList(LocalDate payDate, PointRewardSort sort) {
+    List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(payDate.atStartOfDay());
+
+    Stream<PointRewardDto> pointRewardDtoStream = pointRewardList.stream()
+        .map(PointRewardDto::new);
+    if(sort.equals(PointRewardSort.DESC)) {
+      pointRewardDtoStream = pointRewardDtoStream
+          .sorted(Comparator.comparing(PointRewardDto::getPayAt).reversed());
+    }
+    return pointRewardDtoStream.collect(Collectors.toList());
+  }
+
+  @Transactional(readOnly = true)
+  @Override
+  public PointRewardDto getPointReward(Long pointRewardId) {
+    PointReward pointReward = getPointRewardEntity(pointRewardId);
+    return new PointRewardDto(pointReward);
+  }
+
+  private PointReward getPointRewardEntity(Long pointRewardId) {
+    return pointRewardRepository.findById(pointRewardId)
+        .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포인트 지급 내역 ID=" + pointRewardId));
   }
 
 

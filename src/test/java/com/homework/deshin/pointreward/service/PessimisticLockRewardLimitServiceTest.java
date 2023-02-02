@@ -1,6 +1,6 @@
 package com.homework.deshin.pointreward.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.homework.deshin.pointreward.domain.RewardLimit;
 import com.homework.deshin.pointreward.repository.RewardLimitRepository;
@@ -22,7 +22,6 @@ class PessimisticLockRewardLimitServiceTest {
   @Autowired
   private RewardLimitRepository rewardLimitRepository;
 
-  // 데이터 세팅
   @BeforeEach
   void before() {
     rewardLimitRepository.save(RewardLimit.builder()
@@ -31,14 +30,13 @@ class PessimisticLockRewardLimitServiceTest {
         .build());
   }
 
-  // 테스트 완료 후 데이터 삭제
   @AfterEach
   void after() {
     rewardLimitRepository.deleteAll();
   }
 
   @Test
-  void stock_decrease() {
+  void decrease_테스트() {
     pessimisticLockRewardLimitService.decrease(LocalDate.now());
 
     RewardLimit rewardLimit = rewardLimitRepository.findByPayDate(LocalDate.now()).orElseThrow();
