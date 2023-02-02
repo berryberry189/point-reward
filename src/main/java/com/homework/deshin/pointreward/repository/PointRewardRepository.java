@@ -10,6 +10,8 @@ public interface PointRewardRepository extends JpaRepository<PointReward, Long> 
 
   Optional<PointReward> findByMemberIdAndPayAtGreaterThanEqual(String memberId, LocalDateTime today);
 
+  Optional<PointReward> findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan(String memberId, LocalDateTime yesterday, LocalDateTime today);
+
   List<PointReward> findByPayAtGreaterThanEqual(LocalDateTime today);
 
 }
