@@ -6,13 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.domain.PointReward;
 import com.homework.deshin.pointreward.domain.PointRewardDto;
-import com.homework.deshin.pointreward.domain.RewardLimit;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
-import com.homework.deshin.pointreward.repository.RewardLimitRepository;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,28 +28,15 @@ class PointRewardServiceTest {
   @Autowired
   PointRewardRepository pointRewardRepository;
 
-  @Autowired
-  RewardLimitRepository rewardLimitRepository;
-
   private LocalDate today = LocalDate.now();
 
-  @BeforeEach
-  void initRewardLimit() {
-    Optional<RewardLimit> rewardLimitOpt = rewardLimitRepository.findByPayDate(today);
-    if (rewardLimitOpt.isPresent()) {
-      rewardLimitRepository.delete(rewardLimitOpt.get());
-    }
-    rewardLimitRepository.save(rewardLimitRepository.save(RewardLimit.builder()
-        .payDate(LocalDate.now())
-        .limitCount(10)
-        .build()));
-  }
 
   @BeforeEach
   void PointReward_당일데이터삭제() {
     List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(today.atStartOfDay());
     pointRewardRepository.deleteAll(pointRewardList);
   }
+
 
   @Test
   void 같은_ID로_중복_요청하는_경우_에러발생() {
@@ -98,10 +82,8 @@ class PointRewardServiceTest {
 
     latch.await();
 
-    RewardLimit rewardLimit = rewardLimitRepository.findByPayDate(LocalDate.now()).orElseThrow();
     List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(LocalDate.now().atStartOfDay());
 
-    assertEquals(0, rewardLimit.getLimitCount());
     assertEquals(10, pointRewardList.size());
 
   }

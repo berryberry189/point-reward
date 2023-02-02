@@ -19,6 +19,10 @@ spring:
         format_sql: false
         use_sql_comments: true
 
+  redis:
+    host: localhost
+    port: 6379
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
