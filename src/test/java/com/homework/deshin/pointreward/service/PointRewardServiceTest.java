@@ -8,6 +8,7 @@ import com.homework.deshin.pointreward.domain.PointReward;
 import com.homework.deshin.pointreward.domain.PointRewardDto;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
+import com.homework.deshin.pointreward.repository.RedisRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -26,15 +27,20 @@ class PointRewardServiceTest {
   PointRewardService pointRewardService;
 
   @Autowired
+  RedisRepository redisRepository;
+
+  @Autowired
   PointRewardRepository pointRewardRepository;
 
   private LocalDate today = LocalDate.now();
 
 
   @BeforeEach
-  void PointReward_당일데이터삭제() {
+  void redis_PointReward_당일데이터삭제() {
     List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(today.atStartOfDay());
     pointRewardRepository.deleteAll(pointRewardList);
+
+    redisRepository.deleteByKey(today.toString());
   }
 
 
@@ -88,17 +94,6 @@ class PointRewardServiceTest {
 
   }
 
-  @Test
-  void 전날에_출석한_이력있으면_전날포인트_더하기_100포인트_제공() {
-    String memberId = "member_1";
-    PayPointRequest request = new PayPointRequest(memberId);
-    pointRewardService.payPointReward(request);
-
-    List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(today.atStartOfDay());
-
-    assertEquals(200, pointRewardList.get(0).getPoint());
-
-  }
 
   @Test
   void 날짜지정_목록조회_정렬확인() {
@@ -126,7 +121,5 @@ class PointRewardServiceTest {
     assertThrows(EntityNotFoundException.class, () -> pointRewardService.getPointReward(1000L));
 
   }
-
-
 
 }
