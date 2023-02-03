@@ -38,16 +38,32 @@ public class PointRewardServiceImpl implements PointRewardService {
     long rank = redisRepository.getRank(today.toString(), memberId);
     if(rank > 9) throw new IllegalArgumentException("선착순이 종료되었습니다.");
 
+    duplicateCheck(memberId);
+
+    int point = calculatePoint(memberId);
+
+    PointReward savedPointReward = pointRewardRepository.save(PointReward.builder()
+        .memberId(memberId)
+        .payAt(LocalDateTime.now())
+        .point(point)
+        .build());
+
+    return new PointRewardDto(savedPointReward);
+  }
+
+  private void duplicateCheck(String memberId) {
     Optional<PointReward> pointRewardOptional =
-        pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqual(request.getMemberId(), today.atStartOfDay());
+        pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqual(memberId, today.atStartOfDay());
     if (pointRewardOptional.isPresent()) {
       throw new IllegalArgumentException("이미 참여완료 되었습니다.");
     }
+  }
 
+  private int calculatePoint(String memberId) {
     int point = 100;
     Optional<PointReward> yesterdayPointRewardOpt =
         pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan(
-            request.getMemberId(), today.minusDays(1).atStartOfDay(), today.atStartOfDay());
+            memberId, today.minusDays(1).atStartOfDay(), today.atStartOfDay());
 
     if(yesterdayPointRewardOpt.isPresent()) {
       int yesterdayPoint = yesterdayPointRewardOpt.get().getPoint();
@@ -55,14 +71,7 @@ public class PointRewardServiceImpl implements PointRewardService {
         point += yesterdayPointRewardOpt.get().getPoint();
       }
     }
-
-    PointReward savedPointReward = pointRewardRepository.save(PointReward.builder()
-        .memberId(request.getMemberId())
-        .payAt(LocalDateTime.now())
-        .point(point)
-        .build());
-
-    return new PointRewardDto(savedPointReward);
+    return point;
   }
 
 
