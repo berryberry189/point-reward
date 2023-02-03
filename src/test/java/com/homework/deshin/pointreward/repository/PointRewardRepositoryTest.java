@@ -1,20 +1,25 @@
 package com.homework.deshin.pointreward.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.homework.deshin.pointreward.domain.PointReward;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 /**
  * Repository Layer Unit Test
  */
-@SpringBootTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PointRewardRepositoryTest {
 
   @Autowired PointRewardRepository pointRewardRepository;
@@ -27,7 +32,8 @@ class PointRewardRepositoryTest {
   }
 
   @Test
-  void findByMemberIdAndPayAtGreaterThanEqual_테스트(){
+  @DisplayName("날짜별 포인트 지급 목록 테스트")
+  void findByMemberIdAndPayAtGreaterThanEqual(){
     String memberId = "member_1";
     pointRewardRepository.save(PointReward.builder()
         .memberId("member_1")
@@ -42,13 +48,14 @@ class PointRewardRepositoryTest {
   }
 
   @Test
-  void findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan_테스트(){
-    // db insert 용 데이터로 이전 날짜 데이터 구성
-    String memberId = "member_1";
-    PointReward pointReward = pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan(memberId,
-        LocalDate.now().minusDays(1).atStartOfDay(), LocalDate.now().atStartOfDay()).orElseThrow();
+  @DisplayName("날짜별 포인트 지급 목록 테스트")
+  void findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan(){
 
-    assertEquals(memberId, pointReward.getMemberId());
+    String memberId = "member_1";
+    Optional<PointReward> pointRewardOpt = pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan(memberId,
+        LocalDate.now().minusDays(1).atStartOfDay(), LocalDate.now().atStartOfDay());
+
+    assertTrue(pointRewardOpt.isEmpty());
   }
 
 }
