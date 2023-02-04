@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.domain.PointReward;
-import com.homework.deshin.pointreward.domain.PointRewardDto;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
+import com.homework.deshin.pointreward.dto.PointRewardResponse;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import com.homework.deshin.pointreward.repository.RedisRepository;
 import java.time.LocalDate;
@@ -106,8 +106,8 @@ class PointRewardServiceTest {
     pointRewardService.payPointReward(request1);
     pointRewardService.payPointReward(request2);
 
-    List<PointRewardDto> pointRewardAscList = pointRewardService.getPointRewardList(today, PointRewardSort.ASC);
-    List<PointRewardDto> pointRewardDescList = pointRewardService.getPointRewardList(today, PointRewardSort.DESC);
+    List<PointRewardResponse> pointRewardAscList = pointRewardService.getPointRewardList(today, PointRewardSort.ASC);
+    List<PointRewardResponse> pointRewardDescList = pointRewardService.getPointRewardList(today, PointRewardSort.DESC);
 
     assertEquals(2, pointRewardAscList.size());
     assertEquals("member_1", pointRewardAscList.get(0).getMemberId());
@@ -117,11 +117,11 @@ class PointRewardServiceTest {
   @Test
   void 상세_조회시_ID가_유효하지_않은_경우_EntityNotFoundException발생() {
     PayPointRequest request = new PayPointRequest("member_1");
-    PointRewardDto savedPointRewardDto = pointRewardService.payPointReward(request);
+    PointRewardResponse savedPointRewardResponse = pointRewardService.payPointReward(request);
 
-    PointRewardDto pointReward = pointRewardService.getPointReward(savedPointRewardDto.getPointRewardId());
+    PointRewardResponse pointReward = pointRewardService.getPointReward(savedPointRewardResponse.getPointRewardId());
 
-    assertEquals(savedPointRewardDto.getPointRewardId(), pointReward.getPointRewardId());
+    assertEquals(savedPointRewardResponse.getPointRewardId(), pointReward.getPointRewardId());
     assertThrows(EntityNotFoundException.class, () -> pointRewardService.getPointReward(1000L));
 
   }

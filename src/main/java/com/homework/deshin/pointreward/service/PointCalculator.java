@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class PointCalculator {
 
   private final PointRewardRepository pointRewardRepository;
 
+  @Transactional(readOnly = true)
   public int calculate(String memberId, LocalDate today) {
     int point = 100;
     LocalDateTime end = LocalDateTime.of(today, LocalTime.of(23,59,59));

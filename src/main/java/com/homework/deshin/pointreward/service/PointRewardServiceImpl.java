@@ -2,8 +2,8 @@ package com.homework.deshin.pointreward.service;
 
 import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.domain.PointReward;
-import com.homework.deshin.pointreward.domain.PointRewardDto;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
+import com.homework.deshin.pointreward.dto.PointRewardResponse;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import com.homework.deshin.pointreward.repository.RedisRepository;
 import java.time.LocalDate;
@@ -28,9 +28,9 @@ public class PointRewardServiceImpl implements PointRewardService {
   private final PointCalculator pointCalculator;
   private final LocalDate today = LocalDate.now();
 
-
+  @Transactional
   @Override
-  public PointRewardDto payPointReward(PayPointRequest request) {
+  public PointRewardResponse payPointReward(PayPointRequest request) {
     final long now = System.currentTimeMillis();
     String memberId = request.getMemberId();
     redisRepository.addIfAbsent(today.toString(), memberId, (int) now);
@@ -48,8 +48,9 @@ public class PointRewardServiceImpl implements PointRewardService {
         .point(point)
         .build());
 
-    return new PointRewardDto(savedPointReward);
+    return new PointRewardResponse(savedPointReward);
   }
+
 
   private void duplicateCheck(String memberId) {
     Optional<PointReward> pointRewardOptional =
@@ -62,7 +63,7 @@ public class PointRewardServiceImpl implements PointRewardService {
 
   @Transactional(readOnly = true)
   @Override
-  public List<PointRewardDto> getPointRewardList(LocalDate rewardDate, PointRewardSort sort) {
+  public List<PointRewardResponse> getPointRewardList(LocalDate rewardDate, PointRewardSort sort) {
     LocalDateTime start = rewardDate.atStartOfDay();
     LocalDateTime end = LocalDateTime.of(rewardDate, LocalTime.of(23,59,59));
     List<PointReward> pointRewardList;
@@ -73,15 +74,15 @@ public class PointRewardServiceImpl implements PointRewardService {
       pointRewardList = pointRewardRepository.findByRewardAtBetweenOrderByRewardAtDesc(start, end);
     }
     return pointRewardList.stream()
-        .map(PointRewardDto::new)
+        .map(PointRewardResponse::new)
         .collect(Collectors.toList());
   }
 
   @Transactional(readOnly = true)
   @Override
-  public PointRewardDto getPointReward(Long pointRewardId) {
+  public PointRewardResponse getPointReward(Long pointRewardId) {
     PointReward pointReward = getPointRewardEntity(pointRewardId);
-    return new PointRewardDto(pointReward);
+    return new PointRewardResponse(pointReward);
   }
 
   private PointReward getPointRewardEntity(Long pointRewardId) {

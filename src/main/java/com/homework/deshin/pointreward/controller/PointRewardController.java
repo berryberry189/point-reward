@@ -1,8 +1,8 @@
 package com.homework.deshin.pointreward.controller;
 
 import com.homework.deshin.pointreward.constant.PointRewardSort;
-import com.homework.deshin.pointreward.domain.PointRewardDto;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
+import com.homework.deshin.pointreward.dto.PointRewardResponse;
 import com.homework.deshin.pointreward.service.PointRewardService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,13 +29,13 @@ public class PointRewardController {
 
   @ApiOperation(value = "선착순 포인트 발급")
   @PostMapping("")
-  public ResponseEntity<PointRewardDto> payPointReward(@Valid @RequestBody PayPointRequest request) {
+  public ResponseEntity<PointRewardResponse> payPointReward(@Valid @RequestBody PayPointRequest request) {
     return new ResponseEntity<>(pointRewardService.payPointReward(request), HttpStatus.CREATED);
   }
 
   @ApiOperation(value = "선착순 포인트 목록")
   @GetMapping("")
-  public ResponseEntity<List<PointRewardDto>> pointRewardList(
+  public ResponseEntity<List<PointRewardResponse>> pointRewardList(
       @ApiParam(value = "지급일", example = "2023-02-02")
       @RequestParam(value = "reward_date") LocalDate rewardDate,
       @ApiParam(value = "정렬조건", example = "ASC")
@@ -46,7 +46,7 @@ public class PointRewardController {
 
   @ApiOperation(value = "선착순 포인트 상세")
   @GetMapping("/{point_reward_id}")
-  public ResponseEntity<PointRewardDto> pointReward(
+  public ResponseEntity<PointRewardResponse> pointReward(
       @PathVariable("point_reward_id") Long pointRewardId
   ) {
     return new ResponseEntity<>(pointRewardService.getPointReward(pointRewardId), HttpStatus.OK);
