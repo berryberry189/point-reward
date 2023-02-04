@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.domain.PointReward;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
+import com.homework.deshin.pointreward.dto.PointRewardListResponse;
 import com.homework.deshin.pointreward.dto.PointRewardResponse;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import com.homework.deshin.pointreward.repository.RedisRepository;
@@ -106,12 +107,12 @@ class PointRewardServiceTest {
     pointRewardService.payPointReward(request1);
     pointRewardService.payPointReward(request2);
 
-    List<PointRewardResponse> pointRewardAscList = pointRewardService.getPointRewardList(today, PointRewardSort.ASC);
-    List<PointRewardResponse> pointRewardDescList = pointRewardService.getPointRewardList(today, PointRewardSort.DESC);
+    PointRewardListResponse responseAsc = pointRewardService.getPointRewardList(today, PointRewardSort.ASC);
+    PointRewardListResponse responseDesc = pointRewardService.getPointRewardList(today, PointRewardSort.DESC);
 
-    assertEquals(2, pointRewardAscList.size());
-    assertEquals("member_1", pointRewardAscList.get(0).getMemberId());
-    assertEquals("member_2", pointRewardDescList.get(0).getMemberId());
+    assertEquals(2, responseAsc.getPointRewardList().size());
+    assertEquals("member_1", responseAsc.getPointRewardList().get(0).getMemberId());
+    assertEquals("member_2", responseDesc.getPointRewardList().get(0).getMemberId());
   }
 
   @Test
