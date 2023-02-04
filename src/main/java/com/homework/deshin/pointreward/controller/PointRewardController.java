@@ -2,12 +2,12 @@ package com.homework.deshin.pointreward.controller;
 
 import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.dto.PayPointRequest;
+import com.homework.deshin.pointreward.dto.PointRewardListResponse;
 import com.homework.deshin.pointreward.dto.PointRewardResponse;
 import com.homework.deshin.pointreward.service.PointRewardService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.time.LocalDate;
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,7 @@ public class PointRewardController {
 
   @ApiOperation(value = "선착순 포인트 목록")
   @GetMapping("")
-  public ResponseEntity<List<PointRewardResponse>> pointRewardList(
+  public ResponseEntity<PointRewardListResponse> pointRewardList(
       @ApiParam(value = "지급일", example = "2023-02-02")
       @RequestParam(value = "reward_date") LocalDate rewardDate,
       @ApiParam(value = "정렬조건", example = "ASC")
