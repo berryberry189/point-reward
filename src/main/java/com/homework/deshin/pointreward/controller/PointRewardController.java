@@ -37,12 +37,11 @@ public class PointRewardController {
   @GetMapping("")
   public ResponseEntity<List<PointRewardDto>> pointRewardList(
       @ApiParam(value = "지급일", example = "2023-02-02")
-      @RequestParam(value = "pay_date") LocalDate payDate,
+      @RequestParam(value = "reward_date") LocalDate rewardDate,
       @ApiParam(value = "정렬조건", example = "ASC")
       @RequestParam(value = "sort", required = false) PointRewardSort sort
-
   ) {
-    return new ResponseEntity<>(pointRewardService.getPointRewardList(payDate, sort), HttpStatus.OK);
+    return new ResponseEntity<>(pointRewardService.getPointRewardList(rewardDate, sort), HttpStatus.OK);
   }
 
   @ApiOperation(value = "선착순 포인트 상세")
