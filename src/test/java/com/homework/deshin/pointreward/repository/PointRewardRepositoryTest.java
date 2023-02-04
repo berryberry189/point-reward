@@ -25,21 +25,21 @@ class PointRewardRepositoryTest {
 
   @BeforeEach
   void PointReward_당일데이터삭제() {
-    List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(LocalDate.now().atStartOfDay());
+    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtGreaterThanEqualOrderByRewardAtAsc(LocalDate.now().atStartOfDay());
     pointRewardRepository.deleteAll(pointRewardList);
   }
 
   @Test
   @DisplayName("날짜별 포인트 지급 목록 테스트")
-  void findByMemberIdAndPayAtGreaterThanEqual(){
+  void findByMemberIdAndRewardAtGreaterThanEqual(){
     String memberId = "member_1";
     pointRewardRepository.save(PointReward.builder()
         .memberId("member_1")
         .point(100)
-        .payAt(LocalDateTime.now())
+        .rewardAt(LocalDateTime.now())
         .build());
 
-    PointReward pointReward = pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqual(memberId,
+    PointReward pointReward = pointRewardRepository.findByMemberIdAndRewardAtGreaterThanEqual(memberId,
         LocalDate.now().atStartOfDay()).orElseThrow();
 
     assertEquals(memberId, pointReward.getMemberId());
@@ -47,9 +47,9 @@ class PointRewardRepositoryTest {
 
   @Test
   @DisplayName("날짜별 포인트 지급 목록 테스트")
-  void findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan(){
+  void findByMemberIdAndRewardAtGreaterThanEqualAndRewardAtLessThan(){
     String memberId = "member_1";
-    PointReward pointReward = pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan(memberId,
+    PointReward pointReward = pointRewardRepository.findByMemberIdAndRewardAtGreaterThanEqualAndRewardAtLessThan(memberId,
         LocalDate.now().minusDays(1).atStartOfDay(), LocalDate.now().atStartOfDay()).orElseThrow();
 
     assertEquals(memberId, pointReward.getMemberId());

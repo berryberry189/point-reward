@@ -33,15 +33,15 @@ public class PointReward {
   @Column(name = "point", columnDefinition = "int default 0 comment '지급 포인트'")
   private int point;
 
-  @Column(name = "pay_at", nullable = false, updatable = false, columnDefinition = "timestamp comment '포인트 지급일시'")
+  @Column(name = "reward_at", nullable = false, updatable = false, columnDefinition = "timestamp comment '포인트 지급일시'")
   @CreationTimestamp
-  private LocalDateTime payAt;
+  private LocalDateTime rewardAt;
 
   @Builder
-  public PointReward(String memberId, int point, LocalDateTime payAt) {
+  public PointReward(String memberId, int point, LocalDateTime rewardAt) {
     this.memberId = memberId;
     this.point = point;
-    this.payAt = payAt;
+    this.rewardAt = rewardAt;
   }
 
 }

@@ -16,7 +16,7 @@ public class PointCalculator {
   public int calculate(String memberId, LocalDate today) {
     int point = 100;
     Optional<PointReward> yesterdayPointRewardOpt =
-        pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqualAndPayAtLessThan(
+        pointRewardRepository.findByMemberIdAndRewardAtGreaterThanEqualAndRewardAtLessThan(
             memberId, today.minusDays(1).atStartOfDay(), today.atStartOfDay());
 
     if(yesterdayPointRewardOpt.isPresent()) {

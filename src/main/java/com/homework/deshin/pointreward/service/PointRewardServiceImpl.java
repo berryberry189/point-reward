@@ -45,7 +45,7 @@ public class PointRewardServiceImpl implements PointRewardService {
 
     PointReward savedPointReward = pointRewardRepository.save(PointReward.builder()
         .memberId(memberId)
-        .payAt(LocalDateTime.now())
+        .rewardAt(LocalDateTime.now())
         .point(point)
         .build());
 
@@ -54,7 +54,7 @@ public class PointRewardServiceImpl implements PointRewardService {
 
   private void duplicateCheck(String memberId) {
     Optional<PointReward> pointRewardOptional =
-        pointRewardRepository.findByMemberIdAndPayAtGreaterThanEqual(memberId, today.atStartOfDay());
+        pointRewardRepository.findByMemberIdAndRewardAtGreaterThanEqual(memberId, today.atStartOfDay());
     if (pointRewardOptional.isPresent()) {
       throw new IllegalArgumentException("이미 참여완료 되었습니다.");
     }
@@ -64,13 +64,13 @@ public class PointRewardServiceImpl implements PointRewardService {
   @Transactional(readOnly = true)
   @Override
   public List<PointRewardDto> getPointRewardList(LocalDate payDate, PointRewardSort sort) {
-    List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(payDate.atStartOfDay());
+    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtGreaterThanEqualOrderByRewardAtAsc(payDate.atStartOfDay());
 
     Stream<PointRewardDto> pointRewardDtoStream = pointRewardList.stream()
         .map(PointRewardDto::new);
     if(sort.equals(PointRewardSort.DESC)) {
       pointRewardDtoStream = pointRewardDtoStream
-          .sorted(Comparator.comparing(PointRewardDto::getPayAt).reversed());
+          .sorted(Comparator.comparing(PointRewardDto::getRewardAt).reversed());
     }
     return pointRewardDtoStream.collect(Collectors.toList());
   }

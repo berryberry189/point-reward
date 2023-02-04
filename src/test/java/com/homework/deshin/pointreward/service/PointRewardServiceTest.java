@@ -37,7 +37,7 @@ class PointRewardServiceTest {
 
   @BeforeEach
   void redis_PointReward_당일데이터삭제() {
-    List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(today.atStartOfDay());
+    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtGreaterThanEqualOrderByRewardAtAsc(today.atStartOfDay());
     pointRewardRepository.deleteAll(pointRewardList);
 
     redisRepository.deleteByKey(today.toString());
@@ -88,7 +88,7 @@ class PointRewardServiceTest {
 
     latch.await();
 
-    List<PointReward> pointRewardList = pointRewardRepository.findByPayAtGreaterThanEqualOrderByPayAtAsc(LocalDate.now().atStartOfDay());
+    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtGreaterThanEqualOrderByRewardAtAsc(LocalDate.now().atStartOfDay());
 
     assertEquals(10, pointRewardList.size());
 
