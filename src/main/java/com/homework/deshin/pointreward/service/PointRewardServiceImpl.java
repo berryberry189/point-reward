@@ -8,11 +8,10 @@ import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import com.homework.deshin.pointreward.repository.RedisRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,16 +62,19 @@ public class PointRewardServiceImpl implements PointRewardService {
 
   @Transactional(readOnly = true)
   @Override
-  public List<PointRewardDto> getPointRewardList(LocalDate payDate, PointRewardSort sort) {
-    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtGreaterThanEqualOrderByRewardAtAsc(payDate.atStartOfDay());
-
-    Stream<PointRewardDto> pointRewardDtoStream = pointRewardList.stream()
-        .map(PointRewardDto::new);
-    if(sort.equals(PointRewardSort.DESC)) {
-      pointRewardDtoStream = pointRewardDtoStream
-          .sorted(Comparator.comparing(PointRewardDto::getRewardAt).reversed());
+  public List<PointRewardDto> getPointRewardList(LocalDate rewardDate, PointRewardSort sort) {
+    LocalDateTime start = rewardDate.atStartOfDay();
+    LocalDateTime end = LocalDateTime.of(rewardDate, LocalTime.of(23,59,59));
+    List<PointReward> pointRewardList;
+    if(PointRewardSort.ASC.equals(sort)) {
+      pointRewardList = pointRewardRepository.findByRewardAtBetweenOrderByRewardAtAsc(start, end);
     }
-    return pointRewardDtoStream.collect(Collectors.toList());
+    else {
+      pointRewardList = pointRewardRepository.findByRewardAtBetweenOrderByRewardAtDesc(start, end);
+    }
+    return pointRewardList.stream()
+        .map(PointRewardDto::new)
+        .collect(Collectors.toList());
   }
 
   @Transactional(readOnly = true)

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.homework.deshin.pointreward.domain.PointReward;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,8 @@ class PointRewardRepositoryTest {
 
   @BeforeEach
   void PointReward_당일데이터삭제() {
-    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtGreaterThanEqualOrderByRewardAtAsc(LocalDate.now().atStartOfDay());
+    LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtBetweenOrderByRewardAtAsc(LocalDate.now().atStartOfDay(), end);
     pointRewardRepository.deleteAll(pointRewardList);
   }
 
@@ -47,10 +49,11 @@ class PointRewardRepositoryTest {
 
   @Test
   @DisplayName("날짜별 포인트 지급 목록 테스트")
-  void findByMemberIdAndRewardAtGreaterThanEqualAndRewardAtLessThan(){
+  void findByMemberIdAndRewardAtBetween(){
     String memberId = "member_1";
-    PointReward pointReward = pointRewardRepository.findByMemberIdAndRewardAtGreaterThanEqualAndRewardAtLessThan(memberId,
-        LocalDate.now().minusDays(1).atStartOfDay(), LocalDate.now().atStartOfDay()).orElseThrow();
+    LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+    PointReward pointReward = pointRewardRepository.findByMemberIdAndRewardAtBetween(memberId,
+        LocalDate.now().minusDays(1).atStartOfDay(), end).orElseThrow();
 
     assertEquals(memberId, pointReward.getMemberId());
   }

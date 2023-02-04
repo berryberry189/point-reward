@@ -10,7 +10,7 @@ public interface PointRewardService {
 
   PointRewardDto payPointReward(PayPointRequest request);
 
-  List<PointRewardDto> getPointRewardList(LocalDate payDate, PointRewardSort sort);
+  List<PointRewardDto> getPointRewardList(LocalDate rewardDate, PointRewardSort sort);
 
   PointRewardDto getPointReward(Long pointRewardId);
 
