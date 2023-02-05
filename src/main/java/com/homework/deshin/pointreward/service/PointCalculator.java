@@ -22,12 +22,12 @@ public class PointCalculator {
     LocalDateTime start = today.minusDays(1).atStartOfDay();
     LocalDateTime end = LocalDateTime.of(today.minusDays(1), LocalTime.of(23,59,59));
     Optional<PointReward> yesterdayPointRewardOpt =
-        pointRewardRepository.findByMemberIdAndRewardAtBetween(memberId, start, end);
+        pointRewardRepository.findByMemberIdAndRewardedAtBetween(memberId, start, end);
 
     if(yesterdayPointRewardOpt.isPresent()) {
-      int yesterdayPoint = yesterdayPointRewardOpt.get().getPoint();
+      int yesterdayPoint = yesterdayPointRewardOpt.get().getRewardedPoint();
       if(yesterdayPoint < 1000) {
-        point += yesterdayPointRewardOpt.get().getPoint();
+        point += yesterdayPointRewardOpt.get().getRewardedPoint();
       }
     }
 

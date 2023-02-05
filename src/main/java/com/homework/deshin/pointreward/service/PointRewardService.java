@@ -41,12 +41,12 @@ public class PointRewardService {
 
     duplicateCheck(memberId);
 
-    int point = pointCalculator.calculate(memberId, today);
+    int rewardedPoint = pointCalculator.calculate(memberId, today);
 
     PointReward savedPointReward = pointRewardRepository.save(PointReward.builder()
         .memberId(memberId)
-        .rewardAt(LocalDateTime.now())
-        .point(point)
+        .rewardedAt(LocalDateTime.now())
+        .rewardedPoint(rewardedPoint)
         .build());
 
     return new PointRewardResponse(savedPointReward);
@@ -55,7 +55,7 @@ public class PointRewardService {
 
   private void duplicateCheck(String memberId) {
     Optional<PointReward> pointRewardOptional =
-        pointRewardRepository.findByMemberIdAndRewardAtBetween(memberId, getStartTime(today), getEndTime(today));
+        pointRewardRepository.findByMemberIdAndRewardedAtBetween(memberId, getStartTime(today), getEndTime(today));
     if (pointRewardOptional.isPresent()) {
       throw new IllegalArgumentException("이미 참여완료 되었습니다.");
     }
@@ -68,10 +68,10 @@ public class PointRewardService {
     LocalDateTime end = getEndTime(rewardDate);
     List<PointReward> pointRewardList;
     if(PointRewardSort.ASC.equals(sort)) {
-      pointRewardList = pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtAsc(start, end);
+      pointRewardList = pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(start, end);
     }
     else {
-      pointRewardList = pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtDesc(start, end);
+      pointRewardList = pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtDesc(start, end);
     }
     List<PointRewardDto> pointRewardResponseList = pointRewardList.stream()
         .map(PointRewardDto::new)

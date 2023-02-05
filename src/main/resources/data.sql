@@ -1,4 +1,4 @@
-insert into point_reward (member_id, reward_at, point)
+insert into point_reward (member_id, rewarded_at, rewarded_point)
 values ('member_1', TIMESTAMPADD(SECOND, -9, TIMESTAMPADD(DAY, -11, NOW())), 100),
        ('member_2', TIMESTAMPADD(SECOND, -8, TIMESTAMPADD(DAY, -11, NOW())), 100),
        ('member_3', TIMESTAMPADD(SECOND, -7, TIMESTAMPADD(DAY, -11, NOW())), 100),

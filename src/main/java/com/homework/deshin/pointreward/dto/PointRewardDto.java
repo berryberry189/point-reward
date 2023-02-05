@@ -19,16 +19,16 @@ public class PointRewardDto {
   private String memberId;
 
   @ApiModelProperty(value = "지급 포인트")
-  private int point;
+  private int rewardedPoint;
 
   @ApiModelProperty(value = "포인트 지급일시")
-  private LocalDateTime rewardAt;
+  private LocalDateTime rewardedAt;
 
   public PointRewardDto(PointReward pointReward) {
     this.pointRewardId = pointReward.getId();
     this.memberId = pointReward.getMemberId();
-    this.point = pointReward.getPoint();
-    this.rewardAt = pointReward.getRewardAt();
+    this.rewardedPoint = pointReward.getRewardedPoint();
+    this.rewardedAt = pointReward.getRewardedAt();
   }
 
 }

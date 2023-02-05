@@ -29,21 +29,21 @@ class PointRewardRepositoryTest {
   @AfterEach
   void PointReward_당일데이터삭제() {
     List<PointReward> pointRewardList =
-        pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtAsc(getStartTime(today), getEndTime(today));
+        pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(getStartTime(today), getEndTime(today));
     pointRewardRepository.deleteAll(pointRewardList);
   }
 
   @Test
   @DisplayName("날짜별 포인트 지급 테스트")
-  void findByMemberIdAndRewardAtBetween(){
+  void findByMemberIdAndRewardedAtBetween(){
     String memberId = "member_1";
     pointRewardRepository.save(PointReward.builder()
         .memberId("member_1")
-        .point(100)
-        .rewardAt(LocalDateTime.now())
+        .rewardedPoint(100)
+        .rewardedAt(LocalDateTime.now())
         .build());
 
-    PointReward pointReward = pointRewardRepository.findByMemberIdAndRewardAtBetween(memberId,
+    PointReward pointReward = pointRewardRepository.findByMemberIdAndRewardedAtBetween(memberId,
         getStartTime(today), getEndTime(today)).orElseThrow();
 
     assertEquals(memberId, pointReward.getMemberId());
@@ -51,18 +51,18 @@ class PointRewardRepositoryTest {
 
   @Test
   @DisplayName("날짜별 포인트 지급 목록 테스트 정렬 시간 오름차순")
-  void findAllByRewardAtBetweenOrderByRewardAtAsc() {
+  void findAllByRewardedAtBetweenOrderByRewardedAtAsc() {
     pointRewardRepository.save(PointReward.builder()
         .memberId("member_1")
-        .point(100)
+        .rewardedPoint(100)
         .build());
     pointRewardRepository.save(PointReward.builder()
         .memberId("member_2")
-        .point(100)
+        .rewardedPoint(100)
         .build());
 
     List<PointReward> pointRewardList =
-        pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtAsc(getStartTime(today), getEndTime(today));
+        pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(getStartTime(today), getEndTime(today));
 
     assertEquals(2, pointRewardList.size());
     assertEquals("member_1", pointRewardList.get(0).getMemberId());
@@ -70,18 +70,18 @@ class PointRewardRepositoryTest {
 
   @Test
   @DisplayName("날짜별 포인트 지급 목록 테스트 정렬 시간 내림차순")
-  void findAllByRewardAtBetweenOrderByRewardAtDesc() {
+  void findAllByRewardedAtBetweenOrderByRewardedAtDesc() {
     pointRewardRepository.save(PointReward.builder()
         .memberId("member_1")
-        .point(100)
+        .rewardedPoint(100)
         .build());
     pointRewardRepository.save(PointReward.builder()
         .memberId("member_2")
-        .point(100)
+        .rewardedPoint(100)
         .build());
 
     List<PointReward> pointRewardList =
-        pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtDesc(getStartTime(today), getEndTime(today));
+        pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtDesc(getStartTime(today), getEndTime(today));
 
     assertEquals(2, pointRewardList.size());
     assertEquals("member_2", pointRewardList.get(0).getMemberId());

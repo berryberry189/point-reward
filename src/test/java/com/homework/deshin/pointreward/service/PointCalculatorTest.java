@@ -29,12 +29,12 @@ class PointCalculatorTest {
   void 전날에_출석한_이력있으면_전날포인트_더하기_100포인트_제공() {
     String memberId = "member_1";
 
-    given(pointRewardRepository.findByMemberIdAndRewardAtBetween(
+    given(pointRewardRepository.findByMemberIdAndRewardedAtBetween(
         memberId, today.minusDays(1).atStartOfDay(), LocalDateTime.of(today.minusDays(1), LocalTime.of(23,59,59))))
         .willReturn(Optional.of(PointReward.builder()
-            .point(100)
+            .rewardedPoint(100)
             .memberId(memberId)
-            .rewardAt(today.minusDays(1).atStartOfDay())
+            .rewardedAt(today.minusDays(1).atStartOfDay())
             .build()));
 
     int point = pointCalculator.calculate(memberId, today);

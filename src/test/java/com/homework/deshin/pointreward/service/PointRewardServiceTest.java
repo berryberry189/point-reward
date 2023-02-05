@@ -40,7 +40,7 @@ class PointRewardServiceTest {
 
   @AfterEach
   void redis_PointReward_당일데이터삭제() {
-    List<PointReward> pointRewardList = pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtAsc(
+    List<PointReward> pointRewardList = pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(
         today.atStartOfDay(),
         LocalDateTime.of(today, LocalTime.of(23, 59, 59)));
     pointRewardRepository.deleteAll(pointRewardList);
@@ -94,7 +94,7 @@ class PointRewardServiceTest {
     latch.await();
 
     List<PointReward> pointRewardList =
-        pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtAsc(LocalDate.now().atStartOfDay(),
+        pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(LocalDate.now().atStartOfDay(),
             LocalDateTime.of(today, LocalTime.of(23, 59, 59)));
 
     assertEquals(10, pointRewardList.size());

@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PointRewardRepository extends JpaRepository<PointReward, Long> {
 
-  Optional<PointReward> findByMemberIdAndRewardAtBetween(String memberId, LocalDateTime start, LocalDateTime end);
+  Optional<PointReward> findByMemberIdAndRewardedAtBetween(String memberId, LocalDateTime start, LocalDateTime end);
 
-  List<PointReward> findAllByRewardAtBetweenOrderByRewardAtAsc(LocalDateTime start, LocalDateTime end);
+  List<PointReward> findAllByRewardedAtBetweenOrderByRewardedAtAsc(LocalDateTime start, LocalDateTime end);
 
-  List<PointReward> findAllByRewardAtBetweenOrderByRewardAtDesc(LocalDateTime start, LocalDateTime end);
+  List<PointReward> findAllByRewardedAtBetweenOrderByRewardedAtDesc(LocalDateTime start, LocalDateTime end);
 
 }
