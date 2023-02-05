@@ -15,13 +15,13 @@
 ```
 $ git clone https://github.com/berryberry189/point-reward.git
 ```
-## Build
-```
-$ ./gradlew build
-```
 ## 레디스 실행
 ```
 $ docker-compose -f "docker-compose.yml" up -d --build
+```
+## Build
+```
+$ ./gradlew build
 ```
 ## Run
 ```
