@@ -43,7 +43,7 @@ http://localhost:8080/swagger-ui/
   
 - **GET /point-reward/{point_reward_id}** 선착순 포인트 상세
   - 보상 데이터의 상세내역 조회
-  
+  - 연속된 보상일 이 있는 경우 직전 보상데이터id 함께 반환
   
 
 
