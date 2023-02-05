@@ -2,8 +2,8 @@ package com.homework.deshin.pointreward.service;
 
 import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.domain.PointReward;
-import com.homework.deshin.pointreward.dto.PayPointRequest;
 import com.homework.deshin.pointreward.dto.PointRewardListResponse;
+import com.homework.deshin.pointreward.dto.PointRewardRequest;
 import com.homework.deshin.pointreward.dto.PointRewardResponse;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import com.homework.deshin.pointreward.repository.RedisRepository;
@@ -30,7 +30,7 @@ public class PointRewardService {
   private final LocalDate today = LocalDate.now();
 
   @Transactional
-  public PointRewardResponse payPointReward(PayPointRequest request) {
+  public PointRewardResponse payPointReward(PointRewardRequest request) {
     final long now = System.currentTimeMillis();
     String memberId = request.getMemberId();
     redisRepository.addIfAbsent(today.toString(), memberId, (int) now);

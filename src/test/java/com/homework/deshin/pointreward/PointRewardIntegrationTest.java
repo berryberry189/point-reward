@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.homework.deshin.pointreward.dto.PayPointRequest;
+import com.homework.deshin.pointreward.dto.PointRewardRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class PointRewardIntegrationTest {
   @Test
   @DisplayName("선착순 포인트 발급")
   void payPointOK() throws Exception {
-    PayPointRequest request = new PayPointRequest("member_1");
+    PointRewardRequest request = new PointRewardRequest("member_1");
 
     mvc.perform(post(URI)
             .contentType(MediaType.APPLICATION_JSON)
@@ -45,7 +45,7 @@ public class PointRewardIntegrationTest {
   @Test
   @DisplayName("선착순 포인트 발급 요청 시 멤버 id가 비어있으면 400 상태코드를 반환한다.")
   void payPointRequestFail() throws Exception {
-    PayPointRequest request = new PayPointRequest("");
+    PointRewardRequest request = new PointRewardRequest("");
 
     mvc.perform(post(URI)
             .contentType(MediaType.APPLICATION_JSON)

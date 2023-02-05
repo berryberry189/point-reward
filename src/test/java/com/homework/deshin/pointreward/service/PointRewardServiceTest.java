@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.domain.PointReward;
-import com.homework.deshin.pointreward.dto.PayPointRequest;
 import com.homework.deshin.pointreward.dto.PointRewardListResponse;
+import com.homework.deshin.pointreward.dto.PointRewardRequest;
 import com.homework.deshin.pointreward.dto.PointRewardResponse;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import com.homework.deshin.pointreward.repository.RedisRepository;
@@ -50,7 +50,7 @@ class PointRewardServiceTest {
 
   @Test
   void 같은_ID로_중복_요청하는_경우_에러발생() {
-    PayPointRequest request = new PayPointRequest("member_1");
+    PointRewardRequest request = new PointRewardRequest("member_1");
     pointRewardService.payPointReward(request);
 
     IllegalArgumentException exception =
@@ -62,12 +62,12 @@ class PointRewardServiceTest {
   @Test
   void 선착순_초과로_요청하는_경우_에러발생() {
     for (int i = 1; i <= 10; i++) {
-      PayPointRequest request = new PayPointRequest("member_" + i);
+      PointRewardRequest request = new PointRewardRequest("member_" + i);
       pointRewardService.payPointReward(request);
     }
 
     IllegalArgumentException exception =
-        assertThrows(IllegalArgumentException.class, () -> pointRewardService.payPointReward(new PayPointRequest("member_11")));
+        assertThrows(IllegalArgumentException.class, () -> pointRewardService.payPointReward(new PointRewardRequest("member_11")));
 
     assertEquals("선착순이 종료되었습니다.", exception.getMessage());
   }
@@ -82,7 +82,7 @@ class PointRewardServiceTest {
       int num = i;
       executorService.submit(() -> {
         try {
-          PayPointRequest request = new PayPointRequest("member_" + num);
+          PointRewardRequest request = new PointRewardRequest("member_" + num);
           pointRewardService.payPointReward(request);
         } finally {
           latch.countDown();
@@ -102,8 +102,8 @@ class PointRewardServiceTest {
 
   @Test
   void 날짜지정_목록조회_정렬확인() {
-    PayPointRequest request1 = new PayPointRequest("member_1");
-    PayPointRequest request2 = new PayPointRequest("member_2");
+    PointRewardRequest request1 = new PointRewardRequest("member_1");
+    PointRewardRequest request2 = new PointRewardRequest("member_2");
     pointRewardService.payPointReward(request1);
     pointRewardService.payPointReward(request2);
 
@@ -117,7 +117,7 @@ class PointRewardServiceTest {
 
   @Test
   void 상세_조회시_ID가_유효하지_않은_경우_EntityNotFoundException발생() {
-    PayPointRequest request = new PayPointRequest("member_1");
+    PointRewardRequest request = new PointRewardRequest("member_1");
     PointRewardResponse savedPointRewardResponse = pointRewardService.payPointReward(request);
 
     PointRewardResponse pointReward = pointRewardService.getPointReward(savedPointRewardResponse.getPointRewardId());
