@@ -24,11 +24,16 @@ public class PointRewardResponse {
   @ApiModelProperty(value = "포인트 지급일시")
   private LocalDateTime rewardedAt;
 
-  public PointRewardResponse(PointReward pointReward) {
+  @ApiModelProperty(value = "이전 포인트 지급 아이디(연속 지급 된 경우)")
+  private Long prePointRewardId;
+
+
+  public PointRewardResponse(PointReward pointReward, Long prePointRewardId) {
     this.pointRewardId = pointReward.getId();
     this.memberId = pointReward.getMemberId();
     this.rewardedPoint = pointReward.getRewardedPoint();
     this.rewardedAt = pointReward.getRewardedAt();
+    this.prePointRewardId = prePointRewardId;
   }
 
 }

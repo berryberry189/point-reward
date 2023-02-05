@@ -1,6 +1,7 @@
 package com.homework.deshin.pointreward.controller;
 
 import com.homework.deshin.pointreward.constant.PointRewardSort;
+import com.homework.deshin.pointreward.dto.PointRewardDto;
 import com.homework.deshin.pointreward.dto.PointRewardListResponse;
 import com.homework.deshin.pointreward.dto.PointRewardRequest;
 import com.homework.deshin.pointreward.dto.PointRewardResponse;
@@ -29,7 +30,7 @@ public class PointRewardController {
 
   @ApiOperation(value = "선착순 포인트 발급")
   @PostMapping("")
-  public ResponseEntity<PointRewardResponse> payPointReward(@Valid @RequestBody PointRewardRequest request) {
+  public ResponseEntity<PointRewardDto> payPointReward(@Valid @RequestBody PointRewardRequest request) {
     return new ResponseEntity<>(pointRewardService.payPointReward(request), HttpStatus.CREATED);
   }
 

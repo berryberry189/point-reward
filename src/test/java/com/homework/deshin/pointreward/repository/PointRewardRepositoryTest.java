@@ -40,7 +40,6 @@ class PointRewardRepositoryTest {
     pointRewardRepository.save(PointReward.builder()
         .memberId("member_1")
         .rewardedPoint(100)
-        .rewardedAt(LocalDateTime.now())
         .build());
 
     PointReward pointReward = pointRewardRepository.findByMemberIdAndRewardedAtBetween(memberId,

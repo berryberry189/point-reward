@@ -31,13 +31,15 @@ public class PointRewardService {
   private final LocalDate today = LocalDate.now();
 
   @Transactional
-  public PointRewardResponse payPointReward(PointRewardRequest request) {
+  public PointRewardDto payPointReward(PointRewardRequest request) {
     final long now = System.currentTimeMillis();
     String memberId = request.getMemberId();
     redisRepository.addIfAbsent(today.toString(), memberId, (int) now);
 
     long rank = redisRepository.getRank(today.toString(), memberId);
-    if(rank > 9) throw new IllegalArgumentException("선착순이 종료되었습니다.");
+    if (rank > 9) {
+      throw new IllegalArgumentException("선착순이 종료되었습니다.");
+    }
 
     duplicateCheck(memberId);
 
@@ -49,7 +51,7 @@ public class PointRewardService {
         .rewardedPoint(rewardedPoint)
         .build());
 
-    return new PointRewardResponse(savedPointReward);
+    return new PointRewardDto(savedPointReward);
   }
 
 
@@ -67,23 +69,31 @@ public class PointRewardService {
     LocalDateTime start = getStartTime(rewardDate);
     LocalDateTime end = getEndTime(rewardDate);
     List<PointReward> pointRewardList;
-    if(PointRewardSort.ASC.equals(sort)) {
+    if (PointRewardSort.ASC.equals(sort)) {
       pointRewardList = pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(start, end);
-    }
-    else {
+    } else {
       pointRewardList = pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtDesc(start, end);
     }
-    List<PointRewardDto> pointRewardResponseList = pointRewardList.stream()
+    List<PointRewardDto> pointRewardDtoList = pointRewardList.stream()
         .map(PointRewardDto::new)
         .collect(Collectors.toList());
 
-    return new PointRewardListResponse(pointRewardResponseList);
+    return new PointRewardListResponse(pointRewardDtoList);
   }
 
   @Transactional(readOnly = true)
   public PointRewardResponse getPointReward(Long pointRewardId) {
     PointReward pointReward = getPointRewardEntity(pointRewardId);
-    return new PointRewardResponse(pointReward);
+
+    Long prePointRewardId = null;
+    Optional<PointReward> pointRewardOptional =
+        pointRewardRepository.findByMemberIdAndRewardedAtBetween(
+            pointReward.getMemberId(), getStartTime(today.minusDays(1)), getEndTime(today.minusDays(1)));
+    if (pointRewardOptional.isPresent()) {
+      prePointRewardId = pointRewardOptional.get().getId();
+    }
+
+    return new PointRewardResponse(pointReward, prePointRewardId);
   }
 
   private PointReward getPointRewardEntity(Long pointRewardId) {
@@ -94,8 +104,9 @@ public class PointRewardService {
   private LocalDateTime getStartTime(LocalDate date) {
     return date.atStartOfDay();
   }
+
   private LocalDateTime getEndTime(LocalDate date) {
-    return LocalDateTime.of(date, LocalTime.of(23,59,59));
+    return LocalDateTime.of(date, LocalTime.of(23, 59, 59));
   }
 
 

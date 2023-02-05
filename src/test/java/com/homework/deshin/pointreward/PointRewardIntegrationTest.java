@@ -3,10 +3,14 @@ package com.homework.deshin.pointreward;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.homework.deshin.pointreward.domain.PointReward;
 import com.homework.deshin.pointreward.dto.PointRewardRequest;
+import com.homework.deshin.pointreward.repository.PointRewardRepository;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,9 @@ public class PointRewardIntegrationTest {
 
   @Autowired
   ObjectMapper objectMapper;
+
+  @Autowired
+  PointRewardRepository pointRewardRepository;
 
   final String URI = "/point-reward";
 
@@ -63,6 +70,23 @@ public class PointRewardIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("선착순 포인트 발급 목록 내역 조회.")
+  void getPointRewardList() throws Exception {
+    pointRewardRepository.save(PointReward.builder()
+        .memberId("member_1")
+        .rewardedPoint(100)
+        .build());
+
+    mvc.perform(get(URI)
+            .param("reward_date", LocalDate.now().toString())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.pointRewardList").exists())
+        .andDo(print());
   }
 
   @Test

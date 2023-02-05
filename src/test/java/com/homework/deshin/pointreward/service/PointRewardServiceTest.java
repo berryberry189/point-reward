@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.homework.deshin.pointreward.constant.PointRewardSort;
 import com.homework.deshin.pointreward.domain.PointReward;
+import com.homework.deshin.pointreward.dto.PointRewardDto;
 import com.homework.deshin.pointreward.dto.PointRewardListResponse;
 import com.homework.deshin.pointreward.dto.PointRewardRequest;
 import com.homework.deshin.pointreward.dto.PointRewardResponse;
@@ -120,11 +121,11 @@ class PointRewardServiceTest {
   @Test
   void 상세_조회시_ID가_유효하지_않은_경우_EntityNotFoundException발생() {
     PointRewardRequest request = new PointRewardRequest("member_1");
-    PointRewardResponse savedPointRewardResponse = pointRewardService.payPointReward(request);
+    PointRewardDto savedPointReward = pointRewardService.payPointReward(request);
 
-    PointRewardResponse pointReward = pointRewardService.getPointReward(savedPointRewardResponse.getPointRewardId());
+    PointRewardResponse pointReward = pointRewardService.getPointReward(savedPointReward.getPointRewardId());
 
-    assertEquals(savedPointRewardResponse.getPointRewardId(), pointReward.getPointRewardId());
+    assertEquals(savedPointReward.getPointRewardId(), pointReward.getPointRewardId());
     assertThrows(EntityNotFoundException.class, () -> pointRewardService.getPointReward(1000L));
 
   }
