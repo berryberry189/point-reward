@@ -12,8 +12,6 @@ import com.homework.deshin.pointreward.dto.PointRewardResponse;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import com.homework.deshin.pointreward.repository.RedisRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -41,9 +39,8 @@ class PointRewardServiceTest {
 
   @AfterEach
   void redis_PointReward_당일데이터삭제() {
-    List<PointReward> pointRewardList = pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(
-        today.atStartOfDay(),
-        LocalDateTime.of(today, LocalTime.of(23, 59, 59)));
+    List<PointReward> pointRewardList = pointRewardRepository.findAllByRewardedAtGreaterThanEqualAndRewardedAtLessThanOrderByRewardedAtAsc(
+        today.atStartOfDay(), today.plusDays(1).atStartOfDay());
     pointRewardRepository.deleteAll(pointRewardList);
 
     redisRepository.deleteByKey(today.toString());
@@ -95,8 +92,8 @@ class PointRewardServiceTest {
     latch.await();
 
     List<PointReward> pointRewardList =
-        pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(LocalDate.now().atStartOfDay(),
-            LocalDateTime.of(today, LocalTime.of(23, 59, 59)));
+        pointRewardRepository.findAllByRewardedAtGreaterThanEqualAndRewardedAtLessThanOrderByRewardedAtAsc(
+            today.atStartOfDay(), today.plusDays(1).atStartOfDay());
 
     assertEquals(10, pointRewardList.size());
 

@@ -10,7 +10,6 @@ import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import com.homework.deshin.pointreward.repository.RedisRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,7 +56,8 @@ public class PointRewardService {
 
   private void duplicateCheck(String memberId) {
     Optional<PointReward> pointRewardOptional =
-        pointRewardRepository.findByMemberIdAndRewardedAtBetween(memberId, getStartTime(today), getEndTime(today));
+        pointRewardRepository.findByMemberIdAndRewardedAtGreaterThanEqualAndRewardedAtLessThan(
+            memberId, today.atStartOfDay(), today.plusDays(1).atStartOfDay());
     if (pointRewardOptional.isPresent()) {
       throw new IllegalArgumentException("이미 참여완료 되었습니다.");
     }
@@ -66,13 +66,13 @@ public class PointRewardService {
 
   @Transactional(readOnly = true)
   public PointRewardListResponse getPointRewardList(LocalDate rewardDate, PointRewardSort sort) {
-    LocalDateTime start = getStartTime(rewardDate);
-    LocalDateTime end = getEndTime(rewardDate);
+    LocalDateTime start = rewardDate.atStartOfDay();
+    LocalDateTime end = rewardDate.plusDays(1).atStartOfDay();
     List<PointReward> pointRewardList;
     if (PointRewardSort.ASC.equals(sort)) {
-      pointRewardList = pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtAsc(start, end);
+      pointRewardList = pointRewardRepository.findAllByRewardedAtGreaterThanEqualAndRewardedAtLessThanOrderByRewardedAtAsc(start, end);
     } else {
-      pointRewardList = pointRewardRepository.findAllByRewardedAtBetweenOrderByRewardedAtDesc(start, end);
+      pointRewardList = pointRewardRepository.findAllByRewardedAtGreaterThanEqualAndRewardedAtLessThanOrderByRewardedAtDesc(start, end);
     }
     List<PointRewardDto> pointRewardDtoList = pointRewardList.stream()
         .map(PointRewardDto::new)
@@ -85,10 +85,11 @@ public class PointRewardService {
   public PointRewardResponse getPointReward(Long pointRewardId) {
     PointReward pointReward = getPointRewardEntity(pointRewardId);
 
+    LocalDate rewardDate = pointReward.getRewardedAt().toLocalDate();
     Long prePointRewardId = null;
     Optional<PointReward> pointRewardOptional =
-        pointRewardRepository.findByMemberIdAndRewardedAtBetween(
-            pointReward.getMemberId(), getStartTime(today.minusDays(1)), getEndTime(today.minusDays(1)));
+        pointRewardRepository.findByMemberIdAndRewardedAtGreaterThanEqualAndRewardedAtLessThan(
+            pointReward.getMemberId(), rewardDate.minusDays(1).atStartOfDay(), rewardDate.atStartOfDay());
     if (pointRewardOptional.isPresent()) {
       prePointRewardId = pointRewardOptional.get().getId();
     }
@@ -99,14 +100,6 @@ public class PointRewardService {
   private PointReward getPointRewardEntity(Long pointRewardId) {
     return pointRewardRepository.findById(pointRewardId)
         .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 포인트 지급 내역 ID=" + pointRewardId));
-  }
-
-  private LocalDateTime getStartTime(LocalDate date) {
-    return date.atStartOfDay();
-  }
-
-  private LocalDateTime getEndTime(LocalDate date) {
-    return LocalDateTime.of(date, LocalTime.of(23, 59, 59));
   }
 
 

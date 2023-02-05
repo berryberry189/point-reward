@@ -6,31 +6,33 @@ import static org.mockito.BDDMockito.given;
 import com.homework.deshin.pointreward.domain.PointReward;
 import com.homework.deshin.pointreward.repository.PointRewardRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-@SpringBootTest(classes = PointCalculator.class)
 class PointCalculatorTest {
 
-  @Autowired
   PointCalculator pointCalculator;
 
-  @MockBean
+  @Mock
   PointRewardRepository pointRewardRepository;
 
   private LocalDate today = LocalDate.now();
+
+  @BeforeEach
+  public void setUp() {
+    MockitoAnnotations.openMocks(this);
+    this.pointCalculator = new PointCalculator(pointRewardRepository);
+  }
 
   @Test
   void 전날에_출석한_이력있으면_전날포인트_더하기_100포인트_제공() {
     String memberId = "member_1";
 
-    given(pointRewardRepository.findByMemberIdAndRewardedAtBetween(
-        memberId, today.minusDays(1).atStartOfDay(), LocalDateTime.of(today.minusDays(1), LocalTime.of(23,59,59))))
+    given(pointRewardRepository.findByMemberIdAndRewardedAtGreaterThanEqualAndRewardedAtLessThan(
+        memberId, today.minusDays(1).atStartOfDay(), today.atStartOfDay()))
         .willReturn(Optional.of(PointReward.builder()
             .rewardedPoint(100)
             .memberId(memberId)
