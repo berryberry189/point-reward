@@ -30,7 +30,7 @@ class PointCalculatorTest {
     String memberId = "member_1";
 
     given(pointRewardRepository.findByMemberIdAndRewardAtBetween(
-        memberId, today.minusDays(1).atStartOfDay(), LocalDateTime.of(today, LocalTime.of(23,59,59))))
+        memberId, today.minusDays(1).atStartOfDay(), LocalDateTime.of(today.minusDays(1), LocalTime.of(23,59,59))))
         .willReturn(Optional.of(PointReward.builder()
             .point(100)
             .memberId(memberId)

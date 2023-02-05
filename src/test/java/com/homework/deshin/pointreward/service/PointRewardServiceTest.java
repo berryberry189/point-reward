@@ -18,7 +18,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,9 +38,10 @@ class PointRewardServiceTest {
   private LocalDate today = LocalDate.now();
 
 
-  @BeforeEach
+  @AfterEach
   void redis_PointReward_당일데이터삭제() {
-    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtBetweenOrderByRewardAtAsc(today.atStartOfDay(),
+    List<PointReward> pointRewardList = pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtAsc(
+        today.atStartOfDay(),
         LocalDateTime.of(today, LocalTime.of(23, 59, 59)));
     pointRewardRepository.deleteAll(pointRewardList);
 
@@ -92,8 +93,9 @@ class PointRewardServiceTest {
 
     latch.await();
 
-    List<PointReward> pointRewardList = pointRewardRepository.findByRewardAtBetweenOrderByRewardAtAsc(LocalDate.now().atStartOfDay(),
-        LocalDateTime.of(today, LocalTime.of(23, 59, 59)));
+    List<PointReward> pointRewardList =
+        pointRewardRepository.findAllByRewardAtBetweenOrderByRewardAtAsc(LocalDate.now().atStartOfDay(),
+            LocalDateTime.of(today, LocalTime.of(23, 59, 59)));
 
     assertEquals(10, pointRewardList.size());
 

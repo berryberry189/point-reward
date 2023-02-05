@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 public class PointRewardListResponse {
 
   @ApiModelProperty(value = "포인트 지급 목록")
-  private List<PointRewardResponse> pointRewardList;
+  private List<PointRewardDto> pointRewardList;
 
-  public PointRewardListResponse(List<PointRewardResponse> pointRewardList) {
+  public PointRewardListResponse(List<PointRewardDto> pointRewardList) {
     this.pointRewardList = pointRewardList;
   }
 

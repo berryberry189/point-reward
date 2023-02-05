@@ -19,10 +19,10 @@ public class PointCalculator {
   @Transactional(readOnly = true)
   public int calculate(String memberId, LocalDate today) {
     int point = 100;
-    LocalDateTime end = LocalDateTime.of(today, LocalTime.of(23,59,59));
+    LocalDateTime start = today.minusDays(1).atStartOfDay();
+    LocalDateTime end = LocalDateTime.of(today.minusDays(1), LocalTime.of(23,59,59));
     Optional<PointReward> yesterdayPointRewardOpt =
-        pointRewardRepository.findByMemberIdAndRewardAtBetween(
-            memberId, today.minusDays(1).atStartOfDay(), end);
+        pointRewardRepository.findByMemberIdAndRewardAtBetween(memberId, start, end);
 
     if(yesterdayPointRewardOpt.isPresent()) {
       int yesterdayPoint = yesterdayPointRewardOpt.get().getPoint();
