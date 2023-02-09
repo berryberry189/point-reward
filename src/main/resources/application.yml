@@ -29,6 +29,6 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
-  # 결과 출력 로그 너무 막음
+  # 결과 출력 로그 막음
   org.hibernate.type.descriptor.sql.BasicExtractor: INFO
 

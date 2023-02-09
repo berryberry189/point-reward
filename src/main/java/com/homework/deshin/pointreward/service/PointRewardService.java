@@ -27,7 +27,7 @@ public class PointRewardService {
   private final PointRewardRepository pointRewardRepository;
   private final RedisRepository redisRepository;
   private final PointCalculator pointCalculator;
-  private final LocalDate today = LocalDate.now();
+  private LocalDate today = LocalDate.now();
 
   @Transactional
   public PointRewardDto payPointReward(PointRewardRequest request) {
